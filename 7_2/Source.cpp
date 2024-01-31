@@ -41,21 +41,21 @@ void transform_row(T** A, T* b, int n, int row_i, int row_j, T factor) {
 template<typename T>
 void gauss_elimination(T** matrix, T* b, T* x, int n, int num_threads = 8) {
 	int pivot_i = 0;
-#pragma omp parallel num_threads(num_threads) shared(pivot_i)
+	#pragma omp parallel num_threads(num_threads) shared(pivot_i)
 	{
 		while (pivot_i < n) {
-#pragma omp single
-			{
-				int pivot_j = pivot_i;
-				T pivot = matrix[pivot_i][pivot_j];
-				for (int i = pivot_i + 1; i < n; i++) {
-					T factor = -1 * matrix[i][pivot_i] / pivot;
-#pragma omp task if(n-pivot_i > 256)
-					transform_row(matrix, b, n, pivot_i, i, factor);
-				}
+		#pragma omp single
+		{
+			int pivot_j = pivot_i;
+			T pivot = matrix[pivot_i][pivot_j];
+			for (int i = pivot_i + 1; i < n; i++) {
+				T factor = -1 * matrix[i][pivot_i] / pivot;
+				#pragma omp task if(n-pivot_i > 256)
+				transform_row(matrix, b, n, pivot_i, i, factor);
 			}
-#pragma omp single
-			pivot_i++;
+		}
+		#pragma omp single
+		pivot_i++;
 		}
 	}
 	for (int i = n - 1; i >= 0; i--) {
