@@ -1,0 +1,1 @@
+A collection of parallel programming exercises completed during a university course on Parallel and Distributed Systems. These exercises explore the fundamentals of parallel computing using C++ and various parallel programming models, such as multithreading, OpenMP, and MPI.
